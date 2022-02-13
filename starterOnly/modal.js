@@ -11,7 +11,6 @@ function editNav() {
 // DOM Elements
 const modalbg = document.querySelector(".bground");
 const modalBtn = document.querySelectorAll(".modal-btn");
-const formData = document.querySelectorAll(".formData input[required]");
 const closeModalBtn = document.querySelectorAll(".close");
 const submitbtn = document.querySelector(".btn-submit");
 const modalContent = document.querySelector(".content");
@@ -21,11 +20,10 @@ const modalBody = document.querySelector(".modal-body");
 const champDate = document.getElementById("birthdate");
 const quantity = document.getElementById("quantity");
 const checkbox = document.getElementById("checkbox1");
-const radio = document.querySelectorAll('input[name="location"]');
+const radio = document.querySelectorAll("input[name=location]");
 const prenom = document.getElementById("first");
 const nom = document.getElementById("last");
 const email = document.getElementById("email");
-const test = document.querySelectorAll(".formData");
 
 // Launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -42,7 +40,9 @@ function launchModal()
   nom.addEventListener("input", nomValid);
   email.addEventListener("input", emailValid);
   champDate.addEventListener("input", dateValid);
-  radio.forEach((input) => input.addEventListener("change", radioValid));
+  quantity.addEventListener("input", quantityValid);
+  radio.forEach((input) => input.addEventListener("input", radioValid));
+  checkbox.addEventListener("change", checkboxValid);
 }
 
 function closeModal()
@@ -55,7 +55,8 @@ function closeModal()
   nom.removeEventListener("input", nomValid);
   email.removeEventListener("input", emailValid);
   champDate.removeEventListener("input", dateValid);
-  radio.forEach((input) => input.removeEventListener("change", radioValid));
+  quantity.removeEventListener("input", quantityValid);
+  radio.forEach((input) => input.removeEventListener("input", radioValid));
   modalBody.style.display = "block";
   modalConfirm.style.display = "none";
   reinit();
@@ -69,79 +70,110 @@ function reinit() {
   quantity.value = "";
   radio.forEach((input) => input.checked = false);
   checkbox.checked = false;
-  test.forEach((formData) => formData.dataset.errorVisible = false);
 }
 
-let prenomFinal = "false";
-
-function prenomValid(e) {
-  let prenomTest = e.currentTarget.checkValidity();
-  if (prenomTest == false) {
-    e.currentTarget.parentElement.dataset.errorVisible = true;
-    prenomFinal = false;
+function prenomValid() {
+  if (prenom.checkValidity() !== true) {
+    prenom.parentElement.dataset.errorVisible = true;
+    return false;
   } else {
-    e.currentTarget.parentElement.dataset.errorVisible = false;
-    prenomFinal = true;
+    prenom.parentElement.dataset.errorVisible = false;
+    return true;
   }
 }
 
-let nomFinal = "false";
-
-function nomValid(e) {
-  let nomTest = e.currentTarget.checkValidity();
-  if (nomTest == false) {
-    e.currentTarget.parentElement.dataset.errorVisible = true;
-    nomFinal = false;
+function nomValid() {
+  if (nom.checkValidity() !== true) {
+    nom.parentElement.dataset.errorVisible = true;
+    return false;
   } else {
-    e.currentTarget.parentElement.dataset.errorVisible = false;
-    nomFinal = true;
+    nom.parentElement.dataset.errorVisible = false;
+    return true;
   }
 }
 
-let emailFinal = "false";
-
-function emailValid(e) {
-  let emailTest = e.currentTarget.checkValidity();
-  if (emailTest == false) {
-    e.currentTarget.parentElement.dataset.errorVisible = true;
-    emailFinal = false;
+function emailValid() {
+  if (email.checkValidity() !== true) {
+    email.parentElement.dataset.errorVisible = true;
+    return false;
   } else {
-    e.currentTarget.parentElement.dataset.errorVisible = false;
-    emailFinal = true;
+    email.parentElement.dataset.errorVisible = false;
+    return true;
   }
 }
 
-let dateFinal = "false";
-
-function dateValid(e) {
-let dateFormat = /^([12]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01]))$/;
-if (e.target.value.match(dateFormat)) {
-  e.currentTarget.parentElement.dataset.errorVisible = false;
-  dateFinal = true;
-} else {
-  e.currentTarget.parentElement.dataset.errorVisible = true;
-  dateFinal = false;
+function dateValid() {
+  if (champDate.value.length !== 10) {
+    champDate.parentElement.dataset.errorVisible = true;
+     return false;
+  } else {
+    champDate.parentElement.dataset.errorVisible = false;
+    return true;
   }
 }
 
-let radioFinal = "false";
+function quantityValid() {
+  if (quantity.value.length === 0 || 
+      isNaN(quantity.value === true) || 
+      quantity.value < 0 || quantity.value > 99) {
+        quantity.parentElement.dataset.errorVisible = true;
+        return false;
+  }
+  quantity.parentElement.dataset.errorVisible = false;
+  return true;
+}
 
 function radioValid() {
-    radioFinal = true;
+  const radioChecked = document.querySelectorAll('input[name="location"]:checked');
+  if(radioChecked.length == 0) {
+    radio[0].parentElement.dataset.errorVisible = true;
+    return false;
+  }
+  radio[0].parentElement.dataset.errorVisible = false;
+  return true;
 }
 
-quantityFinal = "false";
-checkboxFinal = "false";
+function checkboxValid() {
+  if (checkbox.checked == false) {
+    checkbox.parentElement.dataset.errorVisible = true;
+    return false;
+  } 
+  checkbox.parentElement.dataset.errorVisible = false;
+  return true;
+}
+
+// Final  validation function 
+
+function elementsNotValidated() {
+  prenomValid()
+  nomValid()
+  emailValid()
+  dateValid()
+  quantityValid()
+  radioValid()
+  checkboxValid()
+}
+
+function validForm() {
+  if (prenomValid() == true && 
+      nomValid() == true && 
+      emailValid() == true && 
+      dateValid() == true && 
+      quantityValid() == true && 
+      radioValid() == true && 
+      checkboxValid() == true) {
+        return true;
+      }
+  return false;
+}
 
 function validate(e) {
   e.preventDefault();
-  quantityFinal = quantity.checkValidity();
-  checkboxFinal = checkbox.checkValidity();
-  if (prenomFinal == true && nomFinal == true && emailFinal == true && dateFinal == true && quantityFinal == true && radioFinal == true && checkboxFinal == true) {
+
+  if (validForm() == true) {
     modalBody.style.display = "none";
     modalConfirm.style.display = "flex";
-    return true;
   } else {
-    console.log("Nunuche");
+    elementsNotValidated();
   }
 }
