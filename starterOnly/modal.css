@@ -120,6 +120,26 @@ main {
   background: #3876ac;
 }
 
+.btn-close {
+  background: #fe142f;
+  display: block;
+  border-radius: 8px;
+  font-size: 1rem;
+  padding: 12px 70px;
+  color: #fff;
+  cursor: pointer;
+  border: 0;
+  position: absolute;
+  bottom: 20px;
+  text-align: center;
+  font-size: 16px;
+  font-family: "DM Sans";
+}
+
+.btn-close:hover {
+  background: #3876ac;
+}
+
 .smFont {
   font-size: 16px;
 }
@@ -452,6 +472,11 @@ footer {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  font-family: "DM Sans";
+  font-weight: 400;
+  font-size: 36px;
+  text-align: center;
+  line-height: 55px;
 }
 
 @keyframes modalopen {
