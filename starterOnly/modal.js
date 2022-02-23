@@ -24,6 +24,7 @@ const radio = document.querySelectorAll("input[name=location]");
 const prenom = document.getElementById("first");
 const nom = document.getElementById("last");
 const email = document.getElementById("email");
+const formData = document.querySelectorAll(".formData");
 
 // Launch modal event
 modalBtn.forEach((btn) => btn.addEventListener("click", launchModal));
@@ -57,6 +58,7 @@ function closeModal()
   champDate.removeEventListener("input", dateValid);
   quantity.removeEventListener("input", quantityValid);
   radio.forEach((input) => input.removeEventListener("input", radioValid));
+  checkbox.removeEventListener("change", checkboxValid);
   modalBody.style.display = "block";
   modalConfirm.style.display = "none";
   reinit();
@@ -70,8 +72,10 @@ function reinit() {
   quantity.value = "";
   radio.forEach((input) => input.checked = false);
   checkbox.checked = false;
+  formData.forEach((formData) => formData.dataset.errorVisible = false);
 }
 
+// Form validation Functions
 function prenomValid() {
   if (prenom.checkValidity() !== true) {
     prenom.parentElement.dataset.errorVisible = true;
@@ -113,8 +117,8 @@ function dateValid() {
 }
 
 function quantityValid() {
-  if (quantity.value.length === 0 || 
-      isNaN(quantity.value === true) || 
+  if (quantity.value.length == 0 || 
+      isNaN(quantity.value) || 
       quantity.value < 0 || quantity.value > 99) {
         quantity.parentElement.dataset.errorVisible = true;
         return false;
@@ -142,7 +146,7 @@ function checkboxValid() {
   return true;
 }
 
-// Final  validation function 
+// Final validation function 
 
 function elementsNotValidated() {
   prenomValid()
@@ -173,7 +177,9 @@ function validate(e) {
   if (validForm() == true) {
     modalBody.style.display = "none";
     modalConfirm.style.display = "flex";
+    return true;
   } else {
     elementsNotValidated();
+    return false;
   }
 }
