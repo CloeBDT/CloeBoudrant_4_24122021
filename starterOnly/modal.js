@@ -106,15 +106,31 @@ function emailValid() {
   }
 }
 
+
 function dateValid() {
-  if (champDate.value.length !== 10) {
+  // Create a variable with the today date
+  let today = new Date();
+  const dd = String(today.getDate()).padStart(2, '0');
+  const mm = String(today.getMonth() + 1).padStart(2, '0');
+  const yyyy = today.getFullYear();
+  today = "'" + mm + '/' + dd + '/' + yyyy + "'";
+  // Convert both to Date Format
+  const dateToValid = new Date(champDate.value);
+  todayDate = new Date(today);
+  // Calculate the difference between the actual date & the date in the form
+  const diffTime = Math.abs(todayDate - dateToValid);
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+  age = (diffDays / 365);
+  // If the person is younger than 3 or older than 100 years old or if there's a mistake in the date -> error
+  if(age<3 || age>100 || isNaN(age)) {
     champDate.parentElement.dataset.errorVisible = true;
-     return false;
+    return false;
   } else {
     champDate.parentElement.dataset.errorVisible = false;
     return true;
   }
 }
+
 
 function quantityValid() {
   if (quantity.value.length == 0 || 
@@ -147,15 +163,17 @@ function checkboxValid() {
 }
 
 // Final validation function 
+function validate(e) {
+  e.preventDefault();
 
-function elementsNotValidated() {
-  prenomValid()
-  nomValid()
-  emailValid()
-  dateValid()
-  quantityValid()
-  radioValid()
-  checkboxValid()
+  if (validForm() == true) {
+    modalBody.style.display = "none";
+    modalConfirm.style.display = "flex";
+    return true;
+  } else {
+    elementsNotValidated();
+    return false;
+  }
 }
 
 function validForm() {
@@ -171,15 +189,12 @@ function validForm() {
   return false;
 }
 
-function validate(e) {
-  e.preventDefault();
-
-  if (validForm() == true) {
-    modalBody.style.display = "none";
-    modalConfirm.style.display = "flex";
-    return true;
-  } else {
-    elementsNotValidated();
-    return false;
-  }
+function elementsNotValidated() {
+  prenomValid()
+  nomValid()
+  emailValid()
+  dateValid()
+  quantityValid()
+  radioValid()
+  checkboxValid()
 }
